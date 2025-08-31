@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Social Responsibility Charts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10">
+
+    <div class="max-w-6xl mx-auto space-y-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-center text-gray-800 mb-8">CSR Expenditure in India (FY 2023-24)</h1>
+
+        <!-- Top Spenders Bar Chart -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Top Corporate Spenders (INR Cr.)</h2>
+            <canvas id="topSpendersChart"></canvas>
+        </div>
+
+        <!-- Compliance Pie Chart -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-semibold mb-4 text-center">CSR Compliance: Companies by Mandate</h2>
+            <div class="max-w-md mx-auto">
+                <canvas id="complianceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- CSR Spent by Company Type Chart -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-semibold mb-4 text-center">CSR Spent: PSU vs. Non-PSU Companies</h2>
+            <div class="max-w-md mx-auto">
+                <canvas id="psuVsNonPsuChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data from your provided screenshots
+            const topSpendersData = {
+                labels: ['HDFC Bank', 'Reliance Industries', 'TCS', 'Oil and Natural Gas', 'Tata Steel', 'Infosys'],
+                data: [921.96, 899.07, 812.65, 612.42, 572.74, 450.76],
+            };
+
+            const complianceData = {
+                labels: ['Less than Prescribed', 'Zero Spent', 'Exactly AS Prescribed', 'More than Prescribed'],
+                data: [5196, 4944, 1763, 14474],
+            };
+
+            const psuVsNonPsuData = {
+                labels: ['Non-PSU (86%)', 'PSU (14%)'],
+                data: [30135.59, 4773.17],
+            };
+
+            // Top Spenders Chart
+            const topSpendersCtx = document.getElementById('topSpendersChart').getContext('2d');
+            new Chart(topSpendersCtx, {
+                type: 'bar',
+                data: {
+                    labels: topSpendersData.labels,
+                    datasets: [{
+                        label: 'Amount Spent (INR Cr.)',
+                        data: topSpendersData.data,
+                        backgroundColor: [
+                            '#4a90e2',
+                            '#50e3c2',
+                            '#f5a623',
+                            '#9b59b6',
+                            '#e74c3c',
+                            '#3498db',
+                        ],
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ₹${context.raw.toFixed(2)} Cr.`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Compliance Pie Chart
+            const complianceCtx = document.getElementById('complianceChart').getContext('2d');
+            new Chart(complianceCtx, {
+                type: 'pie',
+                data: {
+                    labels: complianceData.labels,
+                    datasets: [{
+                        data: complianceData.data,
+                        backgroundColor: [
+                            '#ff6384',
+                            '#36a2eb',
+                            '#ffce56',
+                            '#4bc0c0',
+                        ],
+                        hoverOffset: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((acc, curr) => acc + curr, 0);
+                                    const value = context.raw;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value} companies (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // PSU vs. Non-PSU Chart
+            const psuVsNonPsuCtx = document.getElementById('psuVsNonPsuChart').getContext('2d');
+            new Chart(psuVsNonPsuCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: psuVsNonPsuData.labels,
+                    datasets: [{
+                        data: psuVsNonPsuData.data,
+                        backgroundColor: [
+                            '#ef4444',
+                            '#6b7280'
+                        ],
+                        hoverOffset: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((acc, curr) => acc + curr, 0);
+                                    const value = context.raw;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ₹${value.toFixed(2)} Cr. (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
